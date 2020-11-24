@@ -33,6 +33,12 @@ int main(void)
   // clear screen 
   LCD.ClearScreen(LCD.addr);
 
+  // draw character
+  LCD.DrawChar(LCD.addr, 'a');
+
+  // draw string
+  LCD.DrawString(LCD.addr, "Test");
+
   // EXIT
   // ------------------------------------------------- 
   // return & exit

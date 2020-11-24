@@ -110,13 +110,4 @@
    */
   char HD44780_PCF8547_SendInstruction (char);
 
-  /**
-   * @desc    LCD pulse E
-   *
-   * @param   void
-   *
-   * @return  char
-   */
-  char HD44780_PCF8547_Pulse (void);
-
 #endif

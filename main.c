@@ -30,15 +30,6 @@ int main(void)
   // init LCD with address
   LCD.Init(LCD.addr);
 
-  // clear screen 
-  LCD.ClearScreen(LCD.addr);
-
-  // draw character
-  LCD.DrawChar(LCD.addr, 'a');
-
-  // draw string
-  LCD.DrawString(LCD.addr, "Test");
-
   // EXIT
   // ------------------------------------------------- 
   // return & exit

@@ -160,7 +160,7 @@ char HD44780_PCF8547_Init (char addr)
   // delay > 45us (=37+4 * 270/250)
   _delay_us(50);
 
-  // 4 bit mode 0x20 - send 4 bits in 4 bit mode
+  // 4 bit mode 0x20
   // ----------------------------------------------------------------------
   status = TWI_Transmit_Byte(PCF8574_PIN_DB5);
   // request - start TWI
@@ -170,6 +170,16 @@ char HD44780_PCF8547_Init (char addr)
   }
   // delay > 45us (=37+4 * 270/250)
   _delay_us(50);
+
+  // 
+  // ----------------------------------------------------------------------
+  status = TWI_Transmit_Byte(HD44780_4BIT_MODE | HD44780_2_ROWS | HD44780_FONT_5x8);
+  // request
+  if (TWI_SUCCESS != status) {
+    // error
+    return status;
+  }
+  // check BF
 
 /*  
   // 4-bit & 2-lines & 5x8-dots 0x28 - send 8 bits in 4 bit mode
@@ -190,6 +200,57 @@ char HD44780_PCF8547_Init (char addr)
 
   // success
   return TWI_SUCCESS;
+}
+
+/**
+ * @desc    LCD check BF
+ *
+ * @param   void
+ *
+ * @return  char
+ */
+char HD44780_PCF8547_CheckBF (void)
+{
+  // init status
+  char status = HD44780_STATUS;
+  // busy flag
+  char data = 0x00;
+
+  // TWI: start
+  // -------------------------
+  status = TWI_MT_Start();
+  // request - start TWI
+  if (TWI_SUCCESS != status) {
+    // set error flag 
+    _twi_error_flag = 1;
+    // error status status
+    _twi_error_stat = status;
+    // return error
+    return TWI_ERROR;
+  }
+  // TWI: send SLAR
+  // -------------------------
+  status = TWI_Transmit_SLAR(PCF8574_ADDRESS);
+  // request - send SLAW
+  if (TWI_SUCCESS != status) {
+    // set error flag 
+    _twi_error_flag = 1;
+    // error status status
+    _twi_error_stat = status;
+    // return error
+    return TWI_ERROR;
+  }
+  // get data
+  data = TWI_Receive_Byte();
+  // check if no error
+  if (data == TWI_ERROR) {
+    // return error
+    return TWI_ERROR;
+  }
+  
+
+  // return 0
+  return (PCF8574_PIN_DB7 & data);
 }
 
 /**
@@ -231,60 +292,10 @@ char HD44780_PCF8547_SendInstruction (char data)
     // error
     return status;
   }
-/*
-  // 4bit mode
-  // ------------------------------------------
-  // send required data in required mode
-  HD44780_Send8bitsIn4bitMode(data);
-  // check busy flag
-  HD44780_CheckBFin4bitMode();
-*/
+
   // TWI Stop
   TWI_Stop();
 
   // success
   return TWI_SUCCESS;
-}
-
-/**
- * @desc    LCD pulse E
- *
- * @param   void
- *
- * @return  char
- */
-char HD44780_PCF8547_Pulse (void)
-{
-  // init status
-  char status = HD44780_STATUS;
-  //  Set E
-  //  SETBIT(HD44780_PORT_E, HD44780_E);
-  // -------------------------    
-  status = TWI_Transmit_Byte(PCF8574_PIN_E);
-  // request - start TWI
-  if (TWI_SUCCESS != status) {
-    // error
-    return status;
-  }
-
-  // PWeh delay time > 450ns
-  _delay_us(0.5);
-
-  // Clear E
-  // CLRBIT(HD44780_PORT_E, HD44780_E);
-  // -------------------------    
-  status = TWI_Transmit_Byte(0x00);
-  // request - start TWI
-  if (TWI_SUCCESS != status) {
-    // error
-    return status;
-  }
-
-  // TcycE > 1000ns -> delay depends on PWeh delay time
-  // delay = TcycE - PWeh = 1000 - 500 = 500ns
-  _delay_us(0.5);
-    
-  // success
-  return TWI_SUCCESS;
-
 }

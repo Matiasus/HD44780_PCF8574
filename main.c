@@ -30,6 +30,9 @@ int main(void)
   // init LCD with address
   LCD.Init(LCD.addr);
 
+  // clear screen 
+  LCD.ClearScreen(LCD.addr);
+
   // EXIT
   // ------------------------------------------------- 
   // return & exit

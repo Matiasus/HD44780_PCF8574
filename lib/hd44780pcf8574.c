@@ -136,21 +136,27 @@ char HD44780_PCF8547_Init (char addr)
   // delay > 4.1ms
   _delay_ms(5);
 
-  // pulse E
+  // DB4=1, DB5=1
+  // Note -> Busy Flag (BF) cannot be checked in these instructions
   // ---------------------------------------------------------------------
-  status = TWI_Transmit_Byte(PCF8574_PIN_DB5);
+  status = TWI_Transmit_Byte(PCF8574_PIN_DB4 | PCF8574_PIN_DB5);
   // request - start TWI
   if (TWI_SUCCESS != status) {
     // error
     return status;
   }
-  HD44780_PCF8547_Pulse();
   // delay > 100us
   _delay_us(110);
 
-  // pulse E
+  // DB4=1, DB5=1
+  // Note -> Busy Flag (BF) cannot be checked in these instructions
   // ---------------------------------------------------------------------
-  HD44780_PCF8547_Pulse();
+  status = TWI_Transmit_Byte(PCF8574_PIN_DB4 | PCF8574_PIN_DB5);
+  // request - start TWI
+  if (TWI_SUCCESS != status) {
+    // error
+    return status;
+  }
   // delay > 45us (=37+4 * 270/250)
   _delay_us(50);
 
@@ -162,10 +168,6 @@ char HD44780_PCF8547_Init (char addr)
     // error
     return status;
   }
-
-  // pulse E
-  // ----------------------------------------------------------------------
-  HD44780_PCF8547_Pulse();
   // delay > 45us (=37+4 * 270/250)
   _delay_us(50);
 

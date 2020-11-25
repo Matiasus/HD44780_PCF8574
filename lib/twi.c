@@ -15,11 +15,8 @@
 // include libraries
 #include "twi.h"
 
-/* @var error flag */  
-char _twi_error_flag = TWI_ERROR_FLAG_INIT;
-
 /* @var error status */  
-char _twi_error_stat = TWI_ERROR_STAT_INIT;
+char _twi_error_stat = TWI_ERROR_NONE;
 
 /**
  * @desc    TWI init - initialize frequency
@@ -61,8 +58,6 @@ void TWI_Init(void)
  */
 char TWI_MT_Start(void)
 {
-  // null status flag
-  TWI_TWSR &= ~0xA8;
   // START
   // ----------------------------------------------
   // request for bus
@@ -71,8 +66,10 @@ char TWI_MT_Start(void)
   TWI_WAIT_TILL_TWINT_IS_SET();
   // test if start or repeated start acknowledged
   if ((TWI_STATUS != TWI_START_ACK) && (TWI_STATUS != TWI_REP_START_ACK)) {
-    // return status
-    return TWI_STATUS;
+    // error status status
+    _twi_error_stat = TWI_STATUS;
+    // return error
+    return TWI_ERROR;
   }
   // success
   return TWI_SUCCESS;
@@ -97,8 +94,10 @@ char TWI_Transmit_SLAW(char address)
 
   // find
   if (TWI_STATUS != TWI_MT_SLAW_ACK) {
-    // return status
-    return TWI_STATUS;
+    // error status status
+    _twi_error_stat = TWI_STATUS;
+    // return error
+    return TWI_ERROR;
   }
   // return found device address
   return TWI_SUCCESS;
@@ -123,8 +122,10 @@ char TWI_Transmit_SLAR(char address)
 
   // find
   if (TWI_STATUS != TWI_MR_SLAR_ACK) {
-    // return status
-    return TWI_STATUS;
+    // error status status
+    _twi_error_stat = TWI_STATUS;
+    // return error
+    return TWI_ERROR;
   }
   // return found device address
   return TWI_SUCCESS;
@@ -149,8 +150,10 @@ char TWI_Transmit_Byte(char data)
 
   // send with success
   if (TWI_STATUS != TWI_MT_DATA_ACK) {
-    // return status
-    return TWI_STATUS;
+    // error status status
+    _twi_error_stat = TWI_STATUS;
+    // return error
+    return TWI_ERROR;
   }
   // return success
   return TWI_SUCCESS;
@@ -172,8 +175,6 @@ char TWI_Receive_Byte(void)
 
   // send with success
   if (TWI_STATUS != TWI_MR_DATA_NACK) {
-    // set error flag 
-    _twi_error_flag = 1;
     // error status status
     _twi_error_stat = TWI_STATUS;
     // return error

@@ -69,8 +69,7 @@
   // definitions
   #define TWI_SUCCESS              0
   #define TWI_ERROR                1
-  #define TWI_ERROR_FLAG_INIT      0
-  #define TWI_ERROR_STAT_INIT   0xff 
+  #define TWI_ERROR_NONE           0 
 
   // ++++++++++++++++++++++++++++++++++++++++++
   //
@@ -114,8 +113,6 @@
   #define TWI_ST_DATA_NACK      0xC0  // Data byte in TWDR has been transmitted; NOT ACK has been received
   #define TWI_ST_DATA_LOST_ACK  0xC8  // Last data byte in TWDR has been transmitted (TWEA = '0'); ACK has been received
 
-  /* @var error flag */  
-  extern char _twi_error_flag;
 
   /* @var error status */  
   extern char _twi_error_stat;

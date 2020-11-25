@@ -109,29 +109,35 @@ char HD44780_PCF8547_Init (char addr)
   // TWI: start
   // -------------------------
   status = TWI_MT_Start();
-  // request - start TWI
-  if (TWI_SUCCESS != status) {
-    // error
-    return status;
+  // check status
+  if (TWI_ERROR_NONE != _twi_error_stat) {
+    // error status status
+    _twi_error_stat = status;
+    // return error
+    return TWI_ERROR;
   }
 
   // TWI: send SLAW
   // -------------------------
   status = TWI_Transmit_SLAW(addr);
-  // request - send SLAW
-  if (TWI_SUCCESS != status) {
-    // error
-    return status;
+  // check status
+  if (TWI_ERROR_NONE != _twi_error_stat) {
+    // error status status
+    _twi_error_stat = status;
+    // return error
+    return TWI_ERROR;
   }
 
   // DB4=1, DB5=1
   // Note -> Busy Flag (BF) cannot be checked in these instructions
   // ---------------------------------------------------------------------
   status = TWI_Transmit_Byte(PCF8574_PIN_DB4 | PCF8574_PIN_DB5);
-  // request - start TWI
-  if (TWI_SUCCESS != status) {
-    // error
-    return status;
+  // check status
+  if (TWI_ERROR_NONE != _twi_error_stat) {
+    // error status status
+    _twi_error_stat = status;
+    // return error
+    return TWI_ERROR;
   }
   // delay > 4.1ms
   _delay_ms(5);
@@ -140,10 +146,12 @@ char HD44780_PCF8547_Init (char addr)
   // Note -> Busy Flag (BF) cannot be checked in these instructions
   // ---------------------------------------------------------------------
   status = TWI_Transmit_Byte(PCF8574_PIN_DB4 | PCF8574_PIN_DB5);
-  // request - start TWI
-  if (TWI_SUCCESS != status) {
-    // error
-    return status;
+  // check status
+  if (TWI_ERROR_NONE != _twi_error_stat) {
+    // error status status
+    _twi_error_stat = status;
+    // return error
+    return TWI_ERROR;
   }
   // delay > 100us
   _delay_us(110);
@@ -152,10 +160,12 @@ char HD44780_PCF8547_Init (char addr)
   // Note -> Busy Flag (BF) cannot be checked in these instructions
   // ---------------------------------------------------------------------
   status = TWI_Transmit_Byte(PCF8574_PIN_DB4 | PCF8574_PIN_DB5);
-  // request - start TWI
-  if (TWI_SUCCESS != status) {
-    // error
-    return status;
+  // check status
+  if (TWI_ERROR_NONE != _twi_error_stat) {
+    // error status status
+    _twi_error_stat = status;
+    // return error
+    return TWI_ERROR;
   }
   // delay > 45us (=37+4 * 270/250)
   _delay_us(50);
@@ -163,10 +173,12 @@ char HD44780_PCF8547_Init (char addr)
   // 4 bit mode 0x20
   // ----------------------------------------------------------------------
   status = TWI_Transmit_Byte(PCF8574_PIN_DB5);
-  // request - start TWI
-  if (TWI_SUCCESS != status) {
-    // error
-    return status;
+  // check status
+  if (TWI_ERROR_NONE != _twi_error_stat) {
+    // error status status
+    _twi_error_stat = status;
+    // return error
+    return TWI_ERROR;
   }
   // delay > 45us (=37+4 * 270/250)
   _delay_us(50);
@@ -174,10 +186,12 @@ char HD44780_PCF8547_Init (char addr)
   // 
   // ----------------------------------------------------------------------
   status = TWI_Transmit_Byte(HD44780_4BIT_MODE | HD44780_2_ROWS | HD44780_FONT_5x8);
-  // request
-  if (TWI_SUCCESS != status) {
-    // error
-    return status;
+  // check status
+  if (TWI_ERROR_NONE != _twi_error_stat) {
+    // error status status
+    _twi_error_stat = status;
+    // return error
+    return TWI_ERROR;
   }
   // check BF
 
@@ -219,10 +233,8 @@ char HD44780_PCF8547_CheckBF (void)
   // TWI: start
   // -------------------------
   status = TWI_MT_Start();
-  // request - start TWI
-  if (TWI_SUCCESS != status) {
-    // set error flag 
-    _twi_error_flag = 1;
+  // check status
+  if (TWI_ERROR_NONE == _twi_error_stat) {
     // error status status
     _twi_error_stat = status;
     // return error
@@ -231,10 +243,8 @@ char HD44780_PCF8547_CheckBF (void)
   // TWI: send SLAR
   // -------------------------
   status = TWI_Transmit_SLAR(PCF8574_ADDRESS);
-  // request - send SLAW
-  if (TWI_SUCCESS != status) {
-    // set error flag 
-    _twi_error_flag = 1;
+  // check status
+  if (TWI_ERROR == _twi_error_stat) {
     // error status status
     _twi_error_stat = status;
     // return error
@@ -242,13 +252,14 @@ char HD44780_PCF8547_CheckBF (void)
   }
   // get data
   data = TWI_Receive_Byte();
-  // check if no error
-  if (data == TWI_ERROR) {
+  // check status
+  if (TWI_ERROR == _twi_error_stat) {
+    // error status status
+    _twi_error_stat = status;
     // return error
     return TWI_ERROR;
   }
   
-
   // return 0
   return (PCF8574_PIN_DB7 & data);
 }
@@ -262,6 +273,7 @@ char HD44780_PCF8547_CheckBF (void)
  */
 char HD44780_PCF8547_SendInstruction (char data)
 {
+/*
   // init status
   char status = HD44780_STATUS;
 
@@ -295,7 +307,7 @@ char HD44780_PCF8547_SendInstruction (char data)
 
   // TWI Stop
   TWI_Stop();
-
+*/
   // success
   return TWI_SUCCESS;
 }

@@ -131,9 +131,10 @@
    * @desc    LCD send 8bits instruction in 4 bit mode
    *
    * @param   char
+   * @param   char
    *
    * @return  void
    */
-  void HD44780_PCF8574_Send_8bits_M4b_I (char);
+  void HD44780_PCF8574_Send_8bits_M4b_I (char, char);
 
 #endif

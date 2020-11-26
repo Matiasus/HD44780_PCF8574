@@ -53,7 +53,7 @@
 //              |
 // +---------------------------+
 // |  RS R/W DB7 DB6 DB5 DB4   |   // Display off 0x08
-// |   0   0   0   0   0   0   |   // 
+// |   0   0   0   0   1   0   |   // 
 // |   0   0   1   0   0   0   |   // 
 // |    Wait for BF Cleared    |   // Wait for BF Cleared
 // +---------------------------+
@@ -147,33 +147,111 @@ char HD44780_PCF8574_Init (char addr)
 
   // +---------------------------+
   // |  RS R/W DB7 DB6 DB5 DB4   |   // Display off 0x08
-  // |   0   0   0   0   0   0   |   // 
+  // |   0   0   0   0   1   0   |   // 
   // |   0   0   1   0   0   0   |   // 
   // |    Wait for BF Cleared    |   // Wait for BF Cleared
   // +---------------------------+
-  HD44780_PCF8574_Send_8bits_M4b_I(HD44780_4BIT_MODE | HD44780_2_ROWS | HD44780_FONT_5x8);
+  HD44780_PCF8574_Send_8bits_M4b_I(addr, HD44780_4BIT_MODE | HD44780_2_ROWS | HD44780_FONT_5x8);
   // check BF
-  HD44780_PCF8547_CheckBF(addr);
-
- /* 
-  // 4-bit & 2-lines & 5x8-dots 0x28 - send 8 bits in 4 bit mode
-  HD44780_SendInstruction(HD44780_4BIT_MODE | HD44780_2_ROWS | HD44780_FONT_5x8);
+  HD44780_PCF8574_CheckBF(addr);
 
   // display off 0x08 - send 8 bits in 4 bit mode
-  HD44780_SendInstruction(HD44780_DISP_OFF);
+  HD44780_PCF8574_Send_8bits_M4b_I(addr, HD44780_DISP_OFF);
+  // check BF
+  HD44780_PCF8574_CheckBF(addr);
 
   // display clear 0x01 - send 8 bits in 4 bit mode
-  HD44780_SendInstruction(HD44780_DISP_CLEAR);
+  HD44780_PCF8574_Send_8bits_M4b_I(addr, HD44780_DISP_CLEAR);
+  // check BF
+  HD44780_PCF8574_CheckBF(addr);
 
   // entry mode set 0x06 - send 8 bits in 4 bit mode
-  HD44780_SendInstruction(HD44780_ENTRY_MODE);
-*/
+  HD44780_PCF8574_Send_8bits_M4b_I(addr, HD44780_ENTRY_MODE);
+  // check BF
+  HD44780_PCF8574_CheckBF(addr);
 
   // TWI Stop
   TWI_Stop();
 
   // return success
   return PCF8574_SUCCESS;
+}
+
+/**
+ * @desc    LCD send 4bits instruction in 4 bit mode
+ *
+ * @param   char
+ *
+ * @return  void
+ */
+void HD44780_PCF8574_Send_4bits_M4b_I (char data)
+{
+  // upper nible
+  char up_nibble = data & 0xF0;
+
+  // Send upper nibble, E up
+  // ----------------------------------
+  TWI_Transmit_Byte(up_nibble | PCF8574_PIN_E);
+  // PWeh delay time > 450ns
+  _delay_us(0.5);
+
+  // E down
+  TWI_Transmit_Byte(up_nibble & ~(PCF8574_PIN_E));
+  // PWeh delay time > 450ns
+  _delay_us(0.5);
+
+}
+
+/**
+ * @desc    LCD send 8bits instruction in 4 bit mode
+ *
+ * @param   char
+ * @param   char
+ *
+ * @return  void
+ */
+void HD44780_PCF8574_Send_8bits_M4b_I (char addr, char data)
+{
+  // upper nible
+  char up_nibble = data & 0xF0;
+  // lower nibble
+  char low_nibble = data >> 4;
+
+  // TWI: start
+  // -------------------------
+  TWI_MT_Start();
+  // check if success
+  if (_twi_error_stat != TWI_STATUS_INIT) {
+  }
+
+  // TWI: send SLAW
+  // -------------------------
+  TWI_Transmit_SLAW(addr);
+  // check if success
+  if (_twi_error_stat != TWI_STATUS_INIT) {
+  }
+
+  // Send upper nibble, E up
+  // ----------------------------------
+  TWI_Transmit_Byte(up_nibble | PCF8574_PIN_E);
+  // PWeh delay time > 450ns
+  _delay_us(0.5);
+
+  // E down
+  TWI_Transmit_Byte(up_nibble & ~(PCF8574_PIN_E));
+  // PWeh delay time > 450ns
+  _delay_us(0.5);
+
+  // Send lower nibble, E up
+  // ----------------------------------
+  TWI_Transmit_Byte(low_nibble | PCF8574_PIN_E);
+  // PWeh delay time > 450ns
+  _delay_us(0.5);
+
+  // E down
+  TWI_Transmit_Byte(up_nibble & ~(PCF8574_PIN_E));
+  // PWeh delay time > 450ns
+  _delay_us(0.5);
 }
 
 /**
@@ -209,6 +287,7 @@ void HD44780_PCF8574_CheckBF (char addr)
   if (_twi_error_stat != TWI_STATUS_INIT) {
   }
 
+  // check if BF->DB7 cleared
   do {
     // TWI: read data
     // -------------------------
@@ -222,8 +301,22 @@ void HD44780_PCF8574_CheckBF (char addr)
     // check if success
     if (_twi_error_stat != TWI_STATUS_INIT) {
     }
-    // check if BF cleared
   } while (PCF8574_PIN_DB7 & data);
+}
+
+/**
+ * @desc    LCD Send instruction
+ *
+ * @param   char
+ *
+ * @return  void
+ */
+void HD44780_PCF8547_SendInstruction (char instruction)
+{
+  // send instruction
+//  HD44780_PCF8574_Send_8bits_M4b_I(instruction);
+  // check BF
+//  HD44780_PCF8574_CheckBF(addr);
 }
 
 /**
@@ -238,102 +331,3 @@ void HD44780_PCF8574_Error (char error)
 
 }
 
-/**
- * @desc    LCD send 4bits instruction in 4 bit mode
- *
- * @param   char
- *
- * @return  void
- */
-void HD44780_PCF8574_Send_4bits_M4b_I (char data)
-{
-  // upper nible
-  char up_nibble = data & 0xF0;
-
-  // Send upper nibble, E up
-  // ----------------------------------
-  TWI_Transmit_Byte(up_nibble | PCF8574_PIN_E);
-  // PWeh delay time > 450ns
-  _delay_us(0.5);
-
-  // E down
-  TWI_Transmit_Byte(up_nibble & ~(PCF8574_PIN_E));
-  // PWeh delay time > 450ns
-  _delay_us(0.5);
-
-}
-
-/**
- * @desc    LCD send 8bits instruction in 4 bit mode
- *
- * @param   char
- *
- * @return  void
- */
-void HD44780_PCF8574_Send_8bits_M4b_I (char data)
-{
-  // upper nible
-  char up_nibble = data & 0xF0;
-  // lower nibble
-  char low_nibble = data >> 4;
-
-  // Send upper nibble, E up
-  // ----------------------------------
-  TWI_Transmit_Byte(up_nibble | PCF8574_PIN_E);
-  // PWeh delay time > 450ns
-  _delay_us(0.5);
-
-  // E down
-  TWI_Transmit_Byte(up_nibble & ~(PCF8574_PIN_E));
-  // PWeh delay time > 450ns
-  _delay_us(0.5);
-
-  // Send lower nibble, E up
-  // ----------------------------------
-  TWI_Transmit_Byte(low_nibble | PCF8574_PIN_E);
-  // PWeh delay time > 450ns
-  _delay_us(0.5);
-
-  // E down
-  TWI_Transmit_Byte(up_nibble & ~(PCF8574_PIN_E));
-  // PWeh delay time > 450ns
-  _delay_us(0.5);
-}
-
-
-/**
- * @desc    LCD send instruction
- *
- * @param   char
- *
- * @return  void
- */
-
-void HD44780_PCF8547_SendInstruction (char data)
-{
-  char tmp = data & 0xF0;
-
-  // TWI: start
-  // -------------------------
-  TWI_MT_Start();
-  // check if success
-  if (_twi_error_stat != TWI_STATUS_INIT) {
-  }
-  // TWI: send SLAW
-  // -------------------------
-  TWI_Transmit_SLAW(addr);
-  // check if success
-  if (_twi_error_stat != TWI_STATUS_INIT) {
-  }
-  // TWI: send upper nibble
-  // ----------------------------------------------------------------------
-  status = TWI_Transmit_Byte(tmp);
-  // check if success
-  if (_twi_error_stat != TWI_STATUS_INIT) {
-  }
-  status = TWI_Transmit_Byte(data << 4);
-  // check if success
-  if (_twi_error_stat != TWI_STATUS_INIT) {
-  }
-}
-*/

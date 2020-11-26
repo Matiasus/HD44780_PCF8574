@@ -132,36 +132,36 @@
    *
    * @param   void
    *
-   * @return  char
+   * @return  void
    */
-  char TWI_MT_Start (void);
+  void TWI_MT_Start (void);
 
   /**
    * @desc    TWI Send SLAW
    *
    * @param   void
    *
-   * @return  unsigned char
+   * @return  void
    */
-  char TWI_Transmit_SLAW (char);
+  void TWI_Transmit_SLAW (char);
 
   /**
    * @desc    TWI Send SLAR
    *
    * @param   void
    *
-   * @return  unsigned char
+   * @return  void
    */
-  char TWI_Transmit_SLAR (char);
+  void TWI_Transmit_SLAR (char);
 
   /**
    * @desc    TWI Send data
    *
    * @param   char
    *
-   * @return  char
+   * @return  void
    */
-  char TWI_Transmit_Byte (char);
+  void TWI_Transmit_Byte (char);
 
   /**
    * @desc    TWI Receive 1 byte
@@ -179,7 +179,7 @@
    *
    * @return  void
    */
-  void TWI_Stop(void);
+  void TWI_Stop (void);
 
   /**
    * @desc    TWI Error
@@ -189,6 +189,6 @@
    *
    * @return  void
    */
-  void TWI_Error(char, char);
+  void TWI_Error (char, char);
   
 #endif

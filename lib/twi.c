@@ -107,9 +107,9 @@ void TWI_Transmit_SLAW(char address)
  *
  * @param   char
  *
- * @return  char
+ * @return  void
  */
-char TWI_Transmit_SLAR(char address)
+void TWI_Transmit_SLAR(char address)
 {
   // init status
   char status = TWI_STATUS_INIT;
@@ -126,11 +126,7 @@ char TWI_Transmit_SLAR(char address)
   if (status != TWI_MR_SLAR_ACK) {
     // error status
     TWI_Error(status, TWI_MR_SLAR_ACK);
-    // return error
-    return TWI_ERROR;
   }
-  // return found device address
-  return TWI_SUCCESS;
 }
 
 /**
@@ -138,9 +134,9 @@ char TWI_Transmit_SLAR(char address)
  *
  * @param   char
  *
- * @return  char
+ * @return  void
  */
-char TWI_Transmit_Byte(char data)
+void TWI_Transmit_Byte(char data)
 {
   // init status
   char status = TWI_STATUS_INIT;
@@ -157,11 +153,7 @@ char TWI_Transmit_Byte(char data)
   if (status != TWI_MT_DATA_ACK) {
     // error status
     TWI_Error(status, TWI_MT_DATA_ACK);
-    // return error
-    return TWI_ERROR;
   }
-  // return success
-  return TWI_SUCCESS;
 }
 
 /**
@@ -187,8 +179,6 @@ char TWI_Receive_Byte(void)
   if (status != TWI_MR_DATA_NACK) {
     // error status
     TWI_Error(status, TWI_MR_DATA_NACK);
-    // return error
-    return TWI_ERROR;
   }
   // received data
   return TWI_TWDR;
@@ -224,5 +214,5 @@ void TWI_Error(char status, char expected)
   // make some error operation
 
   // error status  
-  _twi_error_stat = TWI_STATUS_INIT;
+//  _twi_error_stat = TWI_STATUS_INIT;
 }

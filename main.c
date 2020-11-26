@@ -23,9 +23,9 @@
 int main(void)
 {
   // define LCD struct
-  struct HD44780_PCF8547_Structure LCD;
+  struct HD44780_PCF8574_Structure LCD;
   // init LCD struct
-  HD44780_PCF8547_Struct_Init(LCD, 0x27);
+  HD44780_PCF8574_Struct_Init(LCD, 0x27);
 
   // init LCD with address
   LCD.Init(LCD.addr);

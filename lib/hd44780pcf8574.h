@@ -19,8 +19,8 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 
-  #define HD44780_STATUS       0xFF
-
+  #define PCF8574_SUCCESS         0
+  #define PCF8574_ERROR           1
   #define PCF8574_ADDRESS      0x27
 
 
@@ -62,7 +62,6 @@
   #define HD44780_ROW1_END     HD44780_COLS
   #define HD44780_ROW2_START   0x40
   #define HD44780_ROW2_END     HD44780_COLS
-
   
   // set bit
   #define SETBIT(REG, BIT) { REG |= (1 << BIT); }
@@ -75,7 +74,7 @@
   /**
    * @struct 
    */
-  struct HD44780_PCF8547_Structure
+  struct HD44780_PCF8574_Structure
   {
     char addr;
     char (*Init)(char);
@@ -89,7 +88,7 @@
    *
    * @return  void
    */
-  void HD44780_PCF8547_Struct_Init (struct HD44780_PCF8547_Structure, char);
+  void HD44780_PCF8574_Struct_Init (struct HD44780_PCF8574_Structure, char);
 
 
   /**
@@ -99,7 +98,7 @@
    *
    * @return  char
    */
-  char HD44780_PCF8547_Init (char);
+  char HD44780_PCF8574_Init (char);
 
   /**
    * @desc    LCD send instruction
@@ -108,6 +107,33 @@
    *
    * @return  char
    */
-  char HD44780_PCF8547_SendInstruction (char);
+  char HD44780_PCF8574_SendInstruction (char);
+
+  /**
+   * @desc    LCD check BF
+   *
+   * @param   char
+   *
+   * @return  void
+   */
+  void HD44780_PCF8574_CheckBF (char);
+
+  /**
+   * @desc    LCD send 4bits instruction in 4 bit mode
+   *
+   * @param   char
+   *
+   * @return  void
+   */
+  void HD44780_PCF8574_Send_4bits_M4b_I (char);
+
+  /**
+   * @desc    LCD send 8bits instruction in 4 bit mode
+   *
+   * @param   char
+   *
+   * @return  void
+   */
+  void HD44780_PCF8574_Send_8bits_M4b_I (char);
 
 #endif

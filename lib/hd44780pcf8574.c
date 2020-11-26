@@ -97,9 +97,6 @@ void HD44780_PCF8547_Struct_Init (struct HD44780_PCF8547_Structure LCD, char add
  */
 char HD44780_PCF8547_Init (char addr)
 {
-  // init status
-  char status = HD44780_STATUS;
-
   // delay > 15ms
   _delay_ms(16);
 
@@ -108,91 +105,38 @@ char HD44780_PCF8547_Init (char addr)
 
   // TWI: start
   // -------------------------
-  status = TWI_MT_Start();
-  // check status
-  if (TWI_ERROR_NONE != _twi_error_stat) {
-    // error status status
-    _twi_error_stat = status;
-    // return error
-    return TWI_ERROR;
-  }
-
+  TWI_MT_Start();
   // TWI: send SLAW
   // -------------------------
-  status = TWI_Transmit_SLAW(addr);
-  // check status
-  if (TWI_ERROR_NONE != _twi_error_stat) {
-    // error status status
-    _twi_error_stat = status;
-    // return error
-    return TWI_ERROR;
-  }
+  TWI_Transmit_SLAW(addr);
 
-  // DB4=1, DB5=1
-  // Note -> Busy Flag (BF) cannot be checked in these instructions
+  // DB4=1, DB5=1 / BF cannot be checked in these instructions
   // ---------------------------------------------------------------------
-  status = TWI_Transmit_Byte(PCF8574_PIN_DB4 | PCF8574_PIN_DB5);
-  // check status
-  if (TWI_ERROR_NONE != _twi_error_stat) {
-    // error status status
-    _twi_error_stat = status;
-    // return error
-    return TWI_ERROR;
-  }
+  TWI_Transmit_Byte(PCF8574_PIN_DB4 | PCF8574_PIN_DB5);
   // delay > 4.1ms
   _delay_ms(5);
 
-  // DB4=1, DB5=1
-  // Note -> Busy Flag (BF) cannot be checked in these instructions
+  // DB4=1, DB5=1 / BF cannot be checked in these instructions
   // ---------------------------------------------------------------------
-  status = TWI_Transmit_Byte(PCF8574_PIN_DB4 | PCF8574_PIN_DB5);
-  // check status
-  if (TWI_ERROR_NONE != _twi_error_stat) {
-    // error status status
-    _twi_error_stat = status;
-    // return error
-    return TWI_ERROR;
-  }
+  TWI_Transmit_Byte(PCF8574_PIN_DB4 | PCF8574_PIN_DB5);
   // delay > 100us
   _delay_us(110);
 
-  // DB4=1, DB5=1
-  // Note -> Busy Flag (BF) cannot be checked in these instructions
+  // DB4=1, DB5=1 / BF cannot be checked in these instructions
   // ---------------------------------------------------------------------
-  status = TWI_Transmit_Byte(PCF8574_PIN_DB4 | PCF8574_PIN_DB5);
-  // check status
-  if (TWI_ERROR_NONE != _twi_error_stat) {
-    // error status status
-    _twi_error_stat = status;
-    // return error
-    return TWI_ERROR;
-  }
+  TWI_Transmit_Byte(PCF8574_PIN_DB4 | PCF8574_PIN_DB5);
   // delay > 45us (=37+4 * 270/250)
   _delay_us(50);
 
-  // 4 bit mode 0x20
+  // DB5=1 / 4 bit mode 0x20 / BF cannot be checked in these instructions
   // ----------------------------------------------------------------------
-  status = TWI_Transmit_Byte(PCF8574_PIN_DB5);
-  // check status
-  if (TWI_ERROR_NONE != _twi_error_stat) {
-    // error status status
-    _twi_error_stat = status;
-    // return error
-    return TWI_ERROR;
-  }
+  TWI_Transmit_Byte(PCF8574_PIN_DB5);
   // delay > 45us (=37+4 * 270/250)
   _delay_us(50);
 
   // 
   // ----------------------------------------------------------------------
-  status = TWI_Transmit_Byte(HD44780_4BIT_MODE | HD44780_2_ROWS | HD44780_FONT_5x8);
-  // check status
-  if (TWI_ERROR_NONE != _twi_error_stat) {
-    // error status status
-    _twi_error_stat = status;
-    // return error
-    return TWI_ERROR;
-  }
+  TWI_Transmit_Byte(HD44780_4BIT_MODE | HD44780_2_ROWS | HD44780_FONT_5x8);
   // check BF
 
 /*  
@@ -233,10 +177,14 @@ char HD44780_PCF8547_CheckBF (void)
   // TWI: start
   // -------------------------
   status = TWI_MT_Start();
-  // check status
-  if (TWI_ERROR_NONE == _twi_error_stat) {
-    // error status status
-    _twi_error_stat = status;
+  // check error
+  if (TWI_ERROR_NONE != _twi_error_stat) {
+    // return error
+    return TWI_ERROR;
+  // set new error status
+  } else if (TWI_SUCCESS != status) {
+    // error status
+    TWI_Error(status, TWI_SUCCESS);
     // return error
     return TWI_ERROR;
   }
@@ -245,11 +193,16 @@ char HD44780_PCF8547_CheckBF (void)
   status = TWI_Transmit_SLAR(PCF8574_ADDRESS);
   // check status
   if (TWI_ERROR == _twi_error_stat) {
-    // error status status
-    _twi_error_stat = status;
+    // return error
+    return TWI_ERROR;
+  // set new error status
+  } else if (TWI_SUCCESS != status) {
+    // error status
+    TWI_Error(status, TWI_SUCCESS);
     // return error
     return TWI_ERROR;
   }
+
   // get data
   data = TWI_Receive_Byte();
   // check status

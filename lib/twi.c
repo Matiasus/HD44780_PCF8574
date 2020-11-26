@@ -54,25 +54,25 @@ void TWI_Init(void)
  *
  * @param   void
  *
- * @return  char
+ * @return  void
  */
-char TWI_MT_Start(void)
-{
+void TWI_MT_Start(void)
+{ 
+  // init status
+  char status = TWI_STATUS_INIT;
   // START
   // ----------------------------------------------
   // request for bus
   TWI_START();
   // wait till flag set
   TWI_WAIT_TILL_TWINT_IS_SET();
+  // status read
+  status = TWI_STATUS;
   // test if start or repeated start acknowledged
-  if ((TWI_STATUS != TWI_START_ACK) && (TWI_STATUS != TWI_REP_START_ACK)) {
-    // error status status
-    _twi_error_stat = TWI_STATUS;
-    // return error
-    return TWI_ERROR;
+  if ((status != TWI_START_ACK) && (status != TWI_REP_START_ACK)) {
+    // error status
+    TWI_Error(status, TWI_START_ACK);
   }
-  // success
-  return TWI_SUCCESS;
 }
 
 /**
@@ -80,10 +80,12 @@ char TWI_MT_Start(void)
  *
  * @param   char
  *
- * @return  char
+ * @return  void
  */
-char TWI_Transmit_SLAW(char address)
+void TWI_Transmit_SLAW(char address)
 {
+  // init status
+  char status = TWI_STATUS_INIT;
   // SLA+W
   // ----------------------------------------------
   TWI_TWDR = (address << 1);
@@ -91,16 +93,13 @@ char TWI_Transmit_SLAW(char address)
   TWI_MSTR_ENABLE_ACK();
   // wait till flag set
   TWI_WAIT_TILL_TWINT_IS_SET();
-
+  // status read
+  status = TWI_STATUS;
   // find
-  if (TWI_STATUS != TWI_MT_SLAW_ACK) {
-    // error status status
-    _twi_error_stat = TWI_STATUS;
-    // return error
-    return TWI_ERROR;
+  if (status != TWI_MT_SLAW_ACK) {
+    // error status
+    TWI_Error(status, TWI_MT_SLAW_ACK);
   }
-  // return found device address
-  return TWI_SUCCESS;
 }
 
 /**
@@ -112,6 +111,8 @@ char TWI_Transmit_SLAW(char address)
  */
 char TWI_Transmit_SLAR(char address)
 {
+  // init status
+  char status = TWI_STATUS_INIT;
   // SLA+R
   // ----------------------------------------------
   TWI_TWDR = (address << 1) | 0x01;
@@ -119,11 +120,12 @@ char TWI_Transmit_SLAR(char address)
   TWI_MSTR_ENABLE_ACK();
   // wait till flag set
   TWI_WAIT_TILL_TWINT_IS_SET();
-
+  // status read
+  status = TWI_STATUS;
   // find
-  if (TWI_STATUS != TWI_MR_SLAR_ACK) {
-    // error status status
-    _twi_error_stat = TWI_STATUS;
+  if (status != TWI_MR_SLAR_ACK) {
+    // error status
+    TWI_Error(status, TWI_MR_SLAR_ACK);
     // return error
     return TWI_ERROR;
   }
@@ -140,18 +142,21 @@ char TWI_Transmit_SLAR(char address)
  */
 char TWI_Transmit_Byte(char data)
 {
-  // DATA
+  // init status
+  char status = TWI_STATUS_INIT;
+  // DATA SEND
   // ----------------------------------------------
   TWI_TWDR = data;
   // enable
   TWI_MSTR_ENABLE_ACK();
   // wait till flag set
   TWI_WAIT_TILL_TWINT_IS_SET();
-
+  // status read
+  status = TWI_STATUS;
   // send with success
-  if (TWI_STATUS != TWI_MT_DATA_ACK) {
-    // error status status
-    _twi_error_stat = TWI_STATUS;
+  if (status != TWI_MT_DATA_ACK) {
+    // error status
+    TWI_Error(status, TWI_MT_DATA_ACK);
     // return error
     return TWI_ERROR;
   }
@@ -168,15 +173,20 @@ char TWI_Transmit_Byte(char data)
  */
 char TWI_Receive_Byte(void)
 {
+  // init status
+  char status = TWI_STATUS_INIT;
+  // DATA RECEIVE
+  // ----------------------------------------------
   // enable with NACK
   TWI_MSTR_ENABLE_NACK();
   // wait till flag set
   TWI_WAIT_TILL_TWINT_IS_SET();
-
+  // status read
+  status = TWI_STATUS;
   // send with success
-  if (TWI_STATUS != TWI_MR_DATA_NACK) {
-    // error status status
-    _twi_error_stat = TWI_STATUS;
+  if (status != TWI_MR_DATA_NACK) {
+    // error status
+    TWI_Error(status, TWI_MR_DATA_NACK);
     // return error
     return TWI_ERROR;
   }
@@ -199,4 +209,20 @@ void TWI_Stop(void)
   TWI_STOP();
   // wait for TWINT flag is set
 //  TWI_WAIT_TILL_TWINT_IS_SET();
+}
+
+/**
+ * @desc    TWI Error
+ *
+ * @param   char
+ * @param   char
+ *
+ * @return  void
+ */
+void TWI_Error(char status, char expected)
+{
+  // make some error operation
+
+  // error status  
+  _twi_error_stat = TWI_STATUS_INIT;
 }

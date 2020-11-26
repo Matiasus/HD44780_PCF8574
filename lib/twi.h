@@ -27,6 +27,9 @@
     #define TWI_TWSR TWSR // TWI Status Register
   #endif
 
+  // TWI status mask
+  #define TWI_STATUS                    (TWI_TWSR & 0xF8)
+
   // TWI CLK frequency
   //  @param TWBR
   //  @param Prescaler
@@ -41,32 +44,30 @@
   // (1 <<  TWEN) - TWI Enable
   // (1 << TWINT) - TWI Interrupt Flag - must be cleared by set
   // (1 << TWSTA) - TWI Start
-  #define TWI_START() { TWI_TWCR = (1 << TWEN) | (1 << TWINT) | (1 << TWSTA); }
+  #define TWI_START()                   { TWI_TWCR = (1 << TWEN) | (1 << TWINT) | (1 << TWSTA); }
 
   // TWI MASTER enable with NACK
   // (1 <<  TWEN) - TWI Enable
   // (1 << TWINT) - TWI Interrupt Flag - must be cleared by set
-  #define TWI_MSTR_ENABLE_NACK() { TWI_TWCR = (1 << TWEN) | (1 << TWINT); }
+  #define TWI_MSTR_ENABLE_NACK()        { TWI_TWCR = (1 << TWEN) | (1 << TWINT); }
 
   // TWI MASTER enable with ACK
   // (1 <<  TWEN) - TWI Enable
   // (1 << TWINT) - TWI Interrupt Flag - must be cleared by set
   // (1 <<  TWEA) - TWI Master Receiver will return ACK
-  #define TWI_MSTR_ENABLE_ACK() { TWI_TWCR = (1 << TWEN) | (1 << TWINT) | (1 << TWEA); }
+  #define TWI_MSTR_ENABLE_ACK()         { TWI_TWCR = (1 << TWEN) | (1 << TWINT) | (1 << TWEA); }
 
   // TWI stop condition
   // (1 <<  TWEN) - TWI Enable
   // (1 << TWINT) - TWI Interrupt Flag - must be cleared by set
   // (1 << TWSTO) - TWI Stop
-  #define TWI_STOP() { TWI_TWCR = (1 << TWEN) | (1 << TWINT) | (1 << TWSTO); }
+  #define TWI_STOP()                    { TWI_TWCR = (1 << TWEN) | (1 << TWINT) | (1 << TWSTO); }
 
   // TWI test if TWINT Flag is set
-  #define TWI_WAIT_TILL_TWINT_IS_SET() { while (!(TWI_TWCR & (1 << TWINT))); }
+  #define TWI_WAIT_TILL_TWINT_IS_SET()  { while (!(TWI_TWCR & (1 << TWINT))); }
 
-  // TWI status mask
-  #define TWI_STATUS (TWI_TWSR & 0xF8)
- 
   // definitions
+  #define TWI_STATUS_INIT       0xFF
   #define TWI_SUCCESS              0
   #define TWI_ERROR                1
   #define TWI_ERROR_NONE           0 
@@ -179,5 +180,15 @@
    * @return  void
    */
   void TWI_Stop(void);
+
+  /**
+   * @desc    TWI Error
+   *
+   * @param   char
+   * @param   char
+   *
+   * @return  void
+   */
+  void TWI_Error(char, char);
   
 #endif

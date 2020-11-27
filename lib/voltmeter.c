@@ -61,9 +61,6 @@ void Voltmeter (void)
 
   // infinitive loop
   while (1) {
-
-    // ADC
-    // ------------------------------------------------- 
     // read value
     adc_value = AdcReadADCH(1);
     // calculate voltage
@@ -72,7 +69,6 @@ void Voltmeter (void)
     HD44780_PCF8574_PositionXY(addr, 7, 0);
     // draw string
     HD44780_PCF8574_DrawString(addr, AdcValToDecStr(voltage, str));
-
     // delay
     _delay_ms(500);
   }

@@ -52,7 +52,7 @@
 // +---------------------------+
 //              |
 // +---------------------------+
-// |  RS R/W DB7 DB6 DB5 DB4   |   // Display off 0x08
+// |  RS R/W DB7 DB6 DB5 DB4   |   // Display off 0x28
 // |   0   0   0   0   1   0   |   // 
 // |   0   0   1   0   0   0   |   // 
 // |    Wait for BF Cleared    |   // Wait for BF Cleared
@@ -90,20 +90,10 @@ char HD44780_PCF8574_Init (char addr)
   // TWI: start
   // -------------------------
   TWI_MT_Start();
-  // check if success
-  if (_twi_error_stat != TWI_ERROR_NONE) {
-    // return error
-    return PCF8574_ERROR;
-  }
 
   // TWI: send SLAW
   // -------------------------
   TWI_Transmit_SLAW(addr);
-  // check if success
-  if (_twi_error_stat != TWI_ERROR_NONE) {
-    // return error
-    return PCF8574_ERROR;
-  }
 
   // DB7 BD6 DB5 DB4 P3 E RW RS 
   // DB4=1, DB5=1 / BF cannot be checked in these instructions
@@ -133,14 +123,7 @@ char HD44780_PCF8574_Init (char addr)
   // TWI Stop
   TWI_Stop();
 
-  // +---------------------------+
-  // |  RS R/W DB7 DB6 DB5 DB4   |   // Display off 0x08
-  // |   0   0   0   0   1   0   |   // 
-  // |   0   0   1   0   0   0   |   // 
-  // |    Wait for BF Cleared    |   // Wait for BF Cleared
-  // +---------------------------+
-  // d7 d6 d5 d4 p3 cs rw rs
-  //  0  0  1  0  0  0  0  0
+  // 4 bit mode, 2 rows, font 5x8
   HD44780_PCF8574_SendInstruction(addr, HD44780_4BIT_MODE | HD44780_2_ROWS | HD44780_FONT_5x8);
 
   // display off 0x08 - send 8 bits in 4 bit mode
@@ -154,22 +137,6 @@ char HD44780_PCF8574_Init (char addr)
 
   // return success
   return PCF8574_SUCCESS;
-}
-
-/**
- * @desc    LCD send 4bits instruction in 4 bit mode
- *
- * @param   char
- *
- * @return  void
- */
-void HD44780_PCF8574_Send_4bits_M4b_I (char data)
-{
-  // Send upper nibble, E up
-  // ----------------------------------
-  TWI_Transmit_Byte(data);
-  // E pulse
-  HD44780_PCF8574_E_pulse(data);
 }
 
 /**
@@ -193,7 +160,23 @@ void HD44780_PCF8574_E_pulse (char data)
 }
 
 /**
- * @desc    LCD send 8bits instruction in 4 bit mode
+ * @desc    LCD send 4bits in 4 bit mode
+ *
+ * @param   char
+ *
+ * @return  void
+ */
+void HD44780_PCF8574_Send_4bits_M4b_I (char data)
+{
+  // Send upper nibble, E up
+  // ----------------------------------
+  TWI_Transmit_Byte(data);
+  // E pulse
+  HD44780_PCF8574_E_pulse(data);
+}
+
+/**
+ * @desc    LCD send 8bits in 4 bit mode
  *
  * @param   char
  * @param   char
@@ -260,7 +243,7 @@ void HD44780_PCF8574_SendInstruction (char addr, char instruction)
 }
 
 /**
- * @desc    LCD Send instruction 8 bits in 4 bits mode
+ * @desc    LCD Send data 8 bits in 4 bits mode
  *
  * @param   char
  * @param   char
@@ -269,7 +252,7 @@ void HD44780_PCF8574_SendInstruction (char addr, char instruction)
  */
 void HD44780_PCF8574_SendData (char addr, char data)
 {
-  // send instruction
+  // send instruction with backlight pin P3
   HD44780_PCF8574_Send_8bits_M4b_I(addr, data, PCF8574_PIN_RS | PCF8574_PIN_P3);
   // check BF
   //HD44780_PCF8574_CheckBF(addr);
@@ -408,28 +391,27 @@ char HD44780_PCF8574_Shift (char addr, char item, char direction)
     // error
     return PCF8574_ERROR;
   }
-
   // cursor shift
   if (item == HD44780_CURSOR) {
     // right shift
     if (direction == HD44780_RIGHT) {
-      // shit cursor / display to right / left
+      // shit cursor to right
       HD44780_PCF8574_SendInstruction(addr, HD44780_SHIFT | HD44780_CURSOR | HD44780_RIGHT);
     } else {
-      // shit cursor / display to right / left
+      // shit cursor to left
       HD44780_PCF8574_SendInstruction(addr, HD44780_SHIFT | HD44780_CURSOR | HD44780_LEFT);
     }
   // display shift
   } else {
     // right shift
     if (direction == HD44780_RIGHT) {
-      // shit cursor / display to right / left
+      // shit display to right
       HD44780_PCF8574_SendInstruction(addr, HD44780_SHIFT | HD44780_DISPLAY | HD44780_RIGHT);
     } else {
-      // shit cursor / display to right / left
+      // shit display to left
       HD44780_PCF8574_SendInstruction(addr, HD44780_SHIFT | HD44780_DISPLAY | HD44780_LEFT);
     }
   }
   // success
-  return PCF8574_SUCCESS  ;
+  return PCF8574_SUCCESS;
 }

@@ -99,6 +99,16 @@
   void HD44780_PCF8574_SendInstruction (char, char);
 
   /**
+   * @desc    LCD Send data 8 bits in 4 bits mode
+   *
+   * @param   char
+   * @param   char
+   *
+   * @return  void
+   */
+  void HD44780_PCF8574_SendData (char, char);
+
+  /**
    * @desc    LCD check BF
    *
    * @param   char
@@ -108,7 +118,7 @@
   void HD44780_PCF8574_CheckBF (char);
 
   /**
-   * @desc    LCD send 4bits instruction in 4 bit mode
+   * @desc    LCD send 4bits in 4 bit mode
    *
    * @param   char
    *
@@ -117,7 +127,7 @@
   void HD44780_PCF8574_Send_4bits_M4b_I (char);
 
   /**
-   * @desc    LCD send 8bits instruction in 4 bit mode
+   * @desc    LCD send 8bits in 4 bit mode
    *
    * @param   char
    * @param   char

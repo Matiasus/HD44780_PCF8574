@@ -19,7 +19,6 @@
 #include <util/delay.h>
 #include <avr/io.h>
 #include "twi.h"
-#include "st7735.h"
 #include "hd44780pcf8574.h"
 
 // +---------------------------+
@@ -166,16 +165,11 @@ char HD44780_PCF8574_Init (char addr)
  */
 void HD44780_PCF8574_Send_4bits_M4b_I (char data)
 {
-  char str[10];
-
   // Send upper nibble, E up
   // ----------------------------------
   TWI_Transmit_Byte(data);
   // E pulse
   HD44780_PCF8574_E_pulse(data);
-
-  sprintf(str, "%.2x ", (char) (data & ~PCF8574_PIN_E));
-  DrawString(str, BLACK, X1);
 }
 
 /**
@@ -208,7 +202,6 @@ void HD44780_PCF8574_E_pulse (char data)
  */
 void HD44780_PCF8574_Send_8bits_M4b_I (char addr, char data, char annex)
 {
-  char str[10];
   // upper nible with backlight
   char up_nibble = (data & 0xF0) | annex;
   // lower nibble with backlight
@@ -228,17 +221,11 @@ void HD44780_PCF8574_Send_8bits_M4b_I (char addr, char data, char annex)
   // E pulse
   HD44780_PCF8574_E_pulse(up_nibble);
 
-  sprintf(str, "%.2x:", (char) (up_nibble & ~PCF8574_PIN_E));
-  DrawString(str, BLACK, X1);
-
   // Send lower nibble, E up
   // ----------------------------------
   TWI_Transmit_Byte(low_nibble);
   // E pulse
   HD44780_PCF8574_E_pulse(low_nibble);
-
-  sprintf(str, "%.2x ", (char) (low_nibble & ~PCF8574_PIN_E));
-  DrawString(str, BLACK, X1);
 
   // TWI Stop
   TWI_Stop();
@@ -286,12 +273,13 @@ void HD44780_PCF8574_SendData (char addr, char data)
   HD44780_PCF8574_Send_8bits_M4b_I(addr, data, PCF8574_PIN_RS | PCF8574_PIN_P3);
   // check BF
   //HD44780_PCF8574_CheckBF(addr);
-  _delay_ms(50);
+  //_delay_ms(50);
 }
 
 /**
  * @desc    LCD Go to position x, y
  *
+ * @param   char
  * @param   char
  * @param   char
  *
@@ -400,14 +388,48 @@ void HD44780_PCF8574_DrawString (char addr, char *str)
 }
 
 /**
- * @desc    Error
+ * @desc    Shift cursor / display to left / right
  *
- * @param   char
+ * @param   char addr
+ * @param   char item {HD44780_CURSOR; HD44780_DISPLAY}
+ * @param   char direction {HD44780_RIGHT; HD44780_LEFT}
  *
- * @return  void
+ * @return  char
  */
-void HD44780_PCF8574_Error (char error)
+char HD44780_PCF8574_Shift (char addr, char item, char direction)
 {
+  // check if item is cursor or display or direction is left or right
+  if ((item != HD44780_DISPLAY) && (item != HD44780_CURSOR)) {
+    // error
+    return PCF8574_ERROR;
+  }
+  // check if direction is left or right
+  if ((direction != HD44780_RIGHT) && (direction != HD44780_LEFT)) {
+    // error
+    return PCF8574_ERROR;
+  }
 
+  // cursor shift
+  if (item == HD44780_CURSOR) {
+    // right shift
+    if (direction == HD44780_RIGHT) {
+      // shit cursor / display to right / left
+      HD44780_PCF8574_SendInstruction(addr, HD44780_SHIFT | HD44780_CURSOR | HD44780_RIGHT);
+    } else {
+      // shit cursor / display to right / left
+      HD44780_PCF8574_SendInstruction(addr, HD44780_SHIFT | HD44780_CURSOR | HD44780_LEFT);
+    }
+  // display shift
+  } else {
+    // right shift
+    if (direction == HD44780_RIGHT) {
+      // shit cursor / display to right / left
+      HD44780_PCF8574_SendInstruction(addr, HD44780_SHIFT | HD44780_DISPLAY | HD44780_RIGHT);
+    } else {
+      // shit cursor / display to right / left
+      HD44780_PCF8574_SendInstruction(addr, HD44780_SHIFT | HD44780_DISPLAY | HD44780_LEFT);
+    }
+  }
+  // success
+  return PCF8574_SUCCESS  ;
 }
-

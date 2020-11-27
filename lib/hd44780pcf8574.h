@@ -183,4 +183,26 @@
    */
   void HD44780_PCF8574_DrawString (char, char *);
 
+  /**
+   * @desc    LCD Go to position x, y
+   *
+   * @param   char
+   * @param   char
+   * @param   char
+   *
+   * @return  char
+   */
+  char HD44780_PCF8574_PositionXY (char, char, char);
+
+  /**
+   * @desc    Shift cursor / display to left / right
+   *
+   * @param   char addr
+   * @param   char item {HD44780_CURSOR; HD44780_DISPLAY}
+   * @param   char direction {HD44780_RIGHT; HD44780_LEFT}
+   *
+   * @return  char
+   */
+  char HD44780_PCF8574_Shift (char, char, char);
+
 #endif

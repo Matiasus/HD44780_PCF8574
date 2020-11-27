@@ -13,7 +13,6 @@
  */
  
 // include libraries
-#include "st7735.h"
 #include "twi.h"
 
 /* @var error status */  
@@ -28,13 +27,6 @@ char _twi_error_stat = TWI_ERROR_NONE;
  */
 void TWI_Init(void)
 {
-  // init display
-  St7735Init();
-  // clear screen
-  ClearScreen(WHITE);
-  // set position
-  SetPosition(5, 10);
-
   // +++++++++++++++++++++++++++++++++++++++++++++
   // Calculation fclk:
   //
@@ -219,14 +211,8 @@ void TWI_Stop(void)
  */
 void TWI_Error(char status, char expected)
 { 
-  char str[10];
-  // set position
-  SetPosition(5, 20);
-  sprintf(str, "%x != %x", status, expected);
-  DrawString(str, BLACK, X1);
-  UpdateScreen();
-
-
+  // some procedure
+  
   // error status  
 //  _twi_error_stat = TWI_STATUS_INIT;
 }

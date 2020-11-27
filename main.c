@@ -11,7 +11,7 @@
  * @tested      AVR Atmega328p
  * ---------------------------------------------------+
  */
-#include "lib/hd44780pcf8574.h"
+#include "lib/voltmeter.h"
 
 /**
  * @desc   Main function
@@ -22,18 +22,9 @@
  */
 int main(void)
 {
-  // init LCD with address
-  HD44780_PCF8574_Init(PCF8574_ADDRESS);
-  // cursor on
-  HD44780_PCF8574_CursorBlink(PCF8574_ADDRESS);
-  // draw char
-  HD44780_PCF8574_DrawString(PCF8574_ADDRESS, "PCF8574 I2C/TWI");
-/*
-  // clear
-  LCD.Clear(0x27);
-  // cursor on
-  LCD.CursorOn(0x27);
-*/
+  // voltmeter
+  Voltmeter();
+
   // EXIT
   // ------------------------------------------------- 
   // return & exit

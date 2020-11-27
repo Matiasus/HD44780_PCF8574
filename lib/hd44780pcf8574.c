@@ -74,24 +74,6 @@
 // +---------------------------+
 
 /**
- * @desc    LCD init - initialisation routine structure
- *
- * @param   HD44780_PCF8574_Structure
- * @param   char
- *
- * @return  void
- */
-void HD44780_PCF8574_Struct_Init (struct HD44780_PCF8574_Structure LCD)
-{
-  // Init LCD
-  LCD.Init = HD44780_PCF8574_Init;
-  // clear screen
-  LCD.Clear = HD44780_PCF8574_DisplayClear;
-  // cursor on
-  LCD.CursorOn = HD44780_PCF8574_CursorOn;
-}
-
-/**
  * @desc    LCD init - initialisation routine
  *
  * @param   char
@@ -188,20 +170,32 @@ void HD44780_PCF8574_Send_4bits_M4b_I (char data)
 
   // Send upper nibble, E up
   // ----------------------------------
+  TWI_Transmit_Byte(data);
+  // E pulse
+  HD44780_PCF8574_E_pulse(data);
+
+  sprintf(str, "%.2x ", (char) (data & ~PCF8574_PIN_E));
+  DrawString(str, BLACK, X1);
+}
+
+/**
+ * @desc    LCD E pulse
+ *
+ * @param   char
+ *
+ * @return  void
+ */
+void HD44780_PCF8574_E_pulse (char data)
+{
+  // E pulse
+  // ----------------------------------
   TWI_Transmit_Byte(data | PCF8574_PIN_E);
   // PWeh delay time > 450ns
   _delay_us(0.5);
-
-  sprintf(str, "%.2x-", (char) (data | PCF8574_PIN_E));
-  DrawString(str, BLACK, X1);
-
   // E down
   TWI_Transmit_Byte(data & ~PCF8574_PIN_E);
   // PWeh delay time > 450ns
   _delay_us(0.5);
-
-  sprintf(str, "%.2x ", (char) (data & ~PCF8574_PIN_E));
-  DrawString(str, BLACK, X1);
 }
 
 /**
@@ -212,13 +206,13 @@ void HD44780_PCF8574_Send_4bits_M4b_I (char data)
  *
  * @return  void
  */
-void HD44780_PCF8574_Send_8bits_M4b_I (char addr, char data)
+void HD44780_PCF8574_Send_8bits_M4b_I (char addr, char data, char annex)
 {
   char str[10];
-  // upper nible
-  char up_nibble = data & 0xF0;
-  // lower nibble
-  char low_nibble = data << 4;
+  // upper nible with backlight
+  char up_nibble = (data & 0xF0) | annex;
+  // lower nibble with backlight
+  char low_nibble = (data << 4) | annex;
 
   // TWI: start
   // -------------------------
@@ -230,34 +224,18 @@ void HD44780_PCF8574_Send_8bits_M4b_I (char addr, char data)
 
   // Send upper nibble, E up
   // ----------------------------------
-  TWI_Transmit_Byte(up_nibble | PCF8574_PIN_E);
-  // PWeh delay time > 450ns
-  _delay_us(0.5);
-
-  sprintf(str, "%.2x-", (char) (up_nibble | PCF8574_PIN_E));
-  DrawString(str, BLACK, X1);
-
-  // E down
-  TWI_Transmit_Byte(up_nibble & ~PCF8574_PIN_E);
-  // PWeh delay time > 450ns
-  _delay_us(0.5);
+  TWI_Transmit_Byte(up_nibble);
+  // E pulse
+  HD44780_PCF8574_E_pulse(up_nibble);
 
   sprintf(str, "%.2x:", (char) (up_nibble & ~PCF8574_PIN_E));
   DrawString(str, BLACK, X1);
 
   // Send lower nibble, E up
   // ----------------------------------
-  TWI_Transmit_Byte(low_nibble | PCF8574_PIN_E);
-  // PWeh delay time > 450ns
-  _delay_us(0.5);
-
-  sprintf(str, "%.2x-", (char) (low_nibble | PCF8574_PIN_E));
-  DrawString(str, BLACK, X1);
-
-  // E down
-  TWI_Transmit_Byte(low_nibble & ~PCF8574_PIN_E);
-  // PWeh delay time > 450ns
-  _delay_us(0.5);
+  TWI_Transmit_Byte(low_nibble);
+  // E pulse
+  HD44780_PCF8574_E_pulse(low_nibble);
 
   sprintf(str, "%.2x ", (char) (low_nibble & ~PCF8574_PIN_E));
   DrawString(str, BLACK, X1);
@@ -275,39 +253,6 @@ void HD44780_PCF8574_Send_8bits_M4b_I (char addr, char data)
  */
 void HD44780_PCF8574_CheckBF (char addr)
 {
-  // busy flag
-  char data = 0x00;
-
-  // TWI: start
-  // -------------------------
-  TWI_MT_Start();
-  // TWI: send SLAW
-  // -------------------------
-  TWI_Transmit_SLAW(addr);
-  // RW=1 / Read operation
-  // ----------------------------------------------------------------------
-  TWI_Transmit_Byte(PCF8574_PIN_RW);
-
-  // TWI: start
-  // -------------------------
-  TWI_MT_Start();
-  // TWI: send SLAR
-  // -------------------------
-  TWI_Transmit_SLAR(addr);
-
-  // check if BF->DB7 cleared
-  do {
-    // TWI: read data
-    // -------------------------
-    // get upper Nibble of data
-    data = TWI_Receive_Byte();
-    // get lower Nibble of data
-    TWI_Receive_Byte();
-
-  } while (PCF8574_PIN_DB7 & data);
-
-  // TWI Stop
-  TWI_Stop();  
 }
 
 /**
@@ -321,7 +266,24 @@ void HD44780_PCF8574_CheckBF (char addr)
 void HD44780_PCF8574_SendInstruction (char addr, char instruction)
 {
   // send instruction
-  HD44780_PCF8574_Send_8bits_M4b_I(addr, instruction);
+  HD44780_PCF8574_Send_8bits_M4b_I(addr, instruction, PCF8574_PIN_P3);
+  // check BF
+  //HD44780_PCF8574_CheckBF(addr);
+  _delay_ms(50);
+}
+
+/**
+ * @desc    LCD Send instruction 8 bits in 4 bits mode
+ *
+ * @param   char
+ * @param   char
+ *
+ * @return  void
+ */
+void HD44780_PCF8574_SendData (char addr, char data)
+{
+  // send instruction
+  HD44780_PCF8574_Send_8bits_M4b_I(addr, data, PCF8574_PIN_RS | PCF8574_PIN_P3);
   // check BF
   //HD44780_PCF8574_CheckBF(addr);
   _delay_ms(50);
@@ -415,10 +377,8 @@ void HD44780_PCF8574_CursorBlink (char addr)
  */
 void HD44780_PCF8574_DrawChar (char addr, char character)
 {
-/*
   // Diplay clear
-  HD44780_SendData(character);
-*/
+  HD44780_PCF8574_SendData(addr, character);
 }
 
 /**
@@ -431,14 +391,12 @@ void HD44780_PCF8574_DrawChar (char addr, char character)
  */
 void HD44780_PCF8574_DrawString (char addr, char *str)
 {
-/*
-  unsigned char i = 0;
+  unsigned short int i = 0;
   // loop through 5 bytes
   while (str[i] != '\0') {
     //read characters and increment index
-    HD44780_SendData(str[i++]);
+    HD44780_PCF8574_DrawChar(addr, str[i++]);
   }
-*/
 }
 
 /**

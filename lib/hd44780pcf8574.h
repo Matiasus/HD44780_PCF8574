@@ -70,28 +70,6 @@
   // set port / pin if bit is set
   #define SET_IF_BIT_IS_SET(REG, PORT, DATA, BIT) { if((DATA & BIT) > 0) { SETBIT(REG, PORT); } }
 
-
-  /**
-   * @struct 
-   */
-  struct HD44780_PCF8574_Structure
-  {
-    char (*Init)(char);
-    void (*Clear)(char);
-    void (*CursorOn)(char);
-  };
-  
-  /**
-   * @desc    LCD init - initialisation routine structure
-   *
-   * @param   struct HD44780_PCF8547_Structure
-   * @param   char
-   *
-   * @return  void
-   */
-  void HD44780_PCF8574_Struct_Init (struct HD44780_PCF8574_Structure);
-
-
   /**
    * @desc    LCD init - initialisation routine
    *
@@ -100,6 +78,15 @@
    * @return  char
    */
   char HD44780_PCF8574_Init (char);
+
+  /**
+   * @desc    LCD E pulse
+   *
+   * @param   char
+   *
+   * @return  void
+   */
+  void HD44780_PCF8574_E_pulse (char);
 
   /**
    * @desc    LCD send instruction
@@ -134,10 +121,11 @@
    *
    * @param   char
    * @param   char
+   * @param   char
    *
    * @return  void
    */
-  void HD44780_PCF8574_Send_8bits_M4b_I (char, char);
+  void HD44780_PCF8574_Send_8bits_M4b_I (char, char, char);
 
   /**
    * @desc    LCD display clear

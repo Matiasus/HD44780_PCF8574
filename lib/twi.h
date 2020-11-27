@@ -29,6 +29,8 @@
 
   // TWI status mask
   #define TWI_STATUS                    (TWI_TWSR & 0xF8)
+  #define TWI_WRITE                     0
+  #define TWI_READ                      1
 
   // TWI CLK frequency
   //  @param TWBR

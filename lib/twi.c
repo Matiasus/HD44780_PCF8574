@@ -123,7 +123,7 @@ void TWI_Transmit_SLAR(char address)
   char status = TWI_STATUS_INIT;
   // SLA+R
   // ----------------------------------------------
-  TWI_TWDR = (address << 1) | 0x01;
+  TWI_TWDR = (address << 1) | TWI_READ;
   // enable
   TWI_MSTR_ENABLE_ACK();
   // wait till flag set

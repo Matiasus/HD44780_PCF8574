@@ -23,9 +23,11 @@
 int main(void)
 {
   // init LCD with address
-  HD44780_PCF8574_Init(0x27);
+  HD44780_PCF8574_Init(PCF8574_ADDRESS);
   // cursor on
-  HD44780_PCF8574_DisplayOn(0x27);
+  HD44780_PCF8574_CursorBlink(PCF8574_ADDRESS);
+  // draw char
+  HD44780_PCF8574_DrawString(PCF8574_ADDRESS, "PCF8574 I2C/TWI");
 /*
   // clear
   LCD.Clear(0x27);

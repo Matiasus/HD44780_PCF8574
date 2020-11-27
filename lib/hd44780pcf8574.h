@@ -76,8 +76,9 @@
    */
   struct HD44780_PCF8574_Structure
   {
-    char addr;
     char (*Init)(char);
+    void (*Clear)(char);
+    void (*CursorOn)(char);
   };
   
   /**
@@ -88,7 +89,7 @@
    *
    * @return  void
    */
-  void HD44780_PCF8574_Struct_Init (struct HD44780_PCF8574_Structure, char);
+  void HD44780_PCF8574_Struct_Init (struct HD44780_PCF8574_Structure);
 
 
   /**
@@ -104,10 +105,11 @@
    * @desc    LCD send instruction
    *
    * @param   char
+   * @param   char
    *
-   * @return  char
+   * @return  void
    */
-  char HD44780_PCF8574_SendInstruction (char);
+  void HD44780_PCF8574_SendInstruction (char, char);
 
   /**
    * @desc    LCD check BF
@@ -136,5 +138,61 @@
    * @return  void
    */
   void HD44780_PCF8574_Send_8bits_M4b_I (char, char);
+
+  /**
+   * @desc    LCD display clear
+   *
+   * @param   char
+   *
+   * @return  void
+   */
+  void HD44780_PCF8574_DisplayClear (char);
+
+  /**
+   * @desc    LCD display on
+   *
+   * @param   char
+   *
+   * @return  void
+   */
+  void HD44780_PCF8574_DisplayOn (char);
+
+  /**
+   * @desc    LCD cursor on, display on
+   *
+   * @param   char
+   *
+   * @return  void
+   */
+  void HD44780_PCF8574_CursorOn (char);
+
+  /**
+   * @desc    LCD cursor blink, cursor on, display on
+   *
+   * @param   char
+   *
+   * @return  void
+   */
+  void HD44780_PCF8574_CursorBlink (char);
+
+  /**
+   * @desc    LCD draw char
+   *
+   * @param   char
+   * @param   char
+   *
+   * @return  void
+   */
+  void HD44780_PCF8574_DrawChar (char, char);
+
+  /**
+   * @desc    LCD draw string
+   *
+   * @param   char
+   * @param   char *
+   *
+   * @return  void
+   */
+  void HD44780_PCF8574_DrawString (char, char *);
 
 #endif

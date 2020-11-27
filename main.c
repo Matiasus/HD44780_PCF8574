@@ -22,14 +22,16 @@
  */
 int main(void)
 {
-  // define LCD struct
-  struct HD44780_PCF8574_Structure LCD;
-  // init LCD struct
-  HD44780_PCF8574_Struct_Init(LCD, 0x27);
-
   // init LCD with address
-  LCD.Init(LCD.addr);
-
+  HD44780_PCF8574_Init(0x27);
+  // cursor on
+  HD44780_PCF8574_DisplayOn(0x27);
+/*
+  // clear
+  LCD.Clear(0x27);
+  // cursor on
+  LCD.CursorOn(0x27);
+*/
   // EXIT
   // ------------------------------------------------- 
   // return & exit

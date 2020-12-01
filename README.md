@@ -10,7 +10,7 @@ Detailed information is in [HD44780 Datasheet](https://www.sparkfun.com/datashee
 Detailed information is in [PCF8574 Datasheet](https://www.nxp.com/docs/en/data-sheet/PCF8574_PCF8574A.pdf).
 
 ## Library
-Library is aimed for MCU ATmega16 / Atmega8 which supports [4-bit Operation](#initializing-4-bit-operation).
+Library is aimed for MCU ATmega328 / Atmega8 which supports [4-bit Operation](#initializing-4-bit-operation).
 
 ### Tested
 Library was tested and proved on a **_16x2 LCD Display_** with **_Atmega328p_**.
@@ -77,60 +77,60 @@ Initializing LCD Driver HD44780 according to Figure 24 in [HD44780 Datasheet](ht
 ```
 ## Functions
 
-- [HD44780_Init()](#hd44780_init) - init display
-- [HD44780_DisplayClear()](#hd44780_displayclear) - clear display and set position to 0, 0
-- [HD44780_DisplayOn()](#hd44780_displayon) - turn on display
-- [HD44780_CursorOn()](#hd44780_cursoron) - turn on cursor
-- [HD44780_CursorBlink()](#hd44780_cursorblink) - blink the cursor blink
-- [HD44780_DrawChar(char)](#hd44780_drawchar) - draw character on display
-- [HD44780_DrawString(char *)](#hd44780_drawstring) - draw string
-- [HD44780_PositionXY(char, char)](#hd44780_positionxy) - set position X, Y
-- [HD44780_Shift(char, char)](#hd44780_shift) - shift cursor or display to left or right
+- [HD44780_PCF8574_Init()](#hd44780_pcf8574_init) - init display
+- [HD44780_PCF8574_DisplayClear()](#hd44780_pcf8574_displayclear) - clear display and set position to 0, 0
+- [HD44780_PCF8574_DisplayOn()](#hd44780_pcf8574_displayon) - turn on display
+- [HD44780_PCF8574_CursorOn()](#hd44780_pcf8574_cursoron) - turn on cursor
+- [HD44780_PCF8574_CursorBlink()](#hd44780_pcf8574_cursorblink) - blink the cursor blink
+- [HD44780_PCF8574_DrawChar(char)](#hd44780_pcf8574_drawchar) - draw character on display
+- [HD44780_PCF8574_DrawString(char *)](#hd44780_pcf8574_drawstring) - draw string
+- [HD44780_PCF8574_PositionXY(char, char)](#hd44780_pcf8574_positionxy) - set position X, Y
+- [HD44780_PCF8574_Shift(char, char)](#hd44780_pcf8574_shift) - shift cursor or display to left or right
 
-### HD44780_Init
+### HD44780_PCF8574_Init
 ```c
 void HD44780_Init (void)
 ```
 Base initialisation function. If the electrical characteristics conditions listed under the table Power Supply Conditions Using
 Internal Reset Circuit are not met, the internal reset circuit will not operate normally and will fail to initialize the HD44780U. For such a case, initialization must be performed by the MPU as explained in the section [4-bit Operation](#4-bit-operation) or 8-bit Operation depending on mode.
 
-### HD44780_DisplayClear
+### HD44780_PCF8574_DisplayClear
 ```c
 void HD44780_DisplayClear (void)
 ```
 Display clear and set cursor to position 0, 0.
 
-### HD44780_DisplayOn
+### HD44780_PCF8574_DisplayOn
 ```c
 void HD44780_DisplayOn (void)
 ```
 Turn on the display.
 
-### HD44780_CursorOn
+### HD44780_PCF8574_CursorOn
 ```c
 void HD44780_CursorOn (void)
 ```
 Turn on the cursor. Cursor will be visible.
 
-### HD44780_CursorBlink
+### HD44780_PCF8574_CursorBlink
 ```c
 void HD44780_CursorBlink (void)
 ```
 Turn the cursor blink. Cursor will be visible and it will blink.
 
-### HD44780_DrawChar
+### HD44780_PCF8574_DrawChar
 ```c
 void HD44780_DrawChar (char character)
 ```
 Draw specific char on display according to [ASCII table](http://www.asciitable.com/).
 
-### HD44780_DrawString
+### HD44780_PCF8574_DrawString
 ```c
 void HD44780_DrawString (char *str)
 ```
 Draw string.
 
-### HD44780_PositionXY
+### HD44780_PCF8574_PositionXY
 ```c
 char HD44780_PositionXY (char x, char y)
 ```
@@ -138,7 +138,7 @@ Set DDRAM or CGRAM at the specific position X, Y. For LCD 16x2 (cols, rows) maxi
 - X from interval values {0; 1; ... 15},
 - Y from interval values {0; 1}.
 
-### HD44780_Shift
+### HD44780_PCF8574_Shift
 ```c
 char HD44780_Shift (char item, char direction)
 ```

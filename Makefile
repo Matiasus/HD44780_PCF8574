@@ -1,16 +1,16 @@
+# -----------------------------------------------------------------------------------
 #
-# @description  Makefile for compiling, linking and flashing code into microcontroller atmega's
+# @descr        Makefile for compiling, linking and flashing code into atmega's
 #
 # @author       Marian Hrinko
 # @datum        29.07.2020
-# @notes				Suffix Replacement within a macro: $(name:string1=string2)
+# @notes        Suffix Replacement within a macro: $(name:string1=string2)
 #               For each word in 'name' replace 'string1' with 'string2'
 #               For example $(DEPENDENCIES:.c=.o)
-# @inspiration  https://www.cs.swarthmore.edu/~newhall/unixhelp/howto_makefiles.html
+# @inspir       https://www.cs.swarthmore.edu/~newhall/unixhelp/howto_makefiles.html
 #               https://wiki.hacdc.org/index.php/AVR_Makefile
 #
-# BASIC CONFIGURATION, SETTINGS
-# ------------------------------------------------------------------
+# -----------------------------------------------------------------------------------
 #
 # Final file
 TARGET      	= main

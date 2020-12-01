@@ -252,7 +252,9 @@ void HD44780_PCF8574_SendInstruction (char addr, char instruction)
  */
 void HD44780_PCF8574_SendData (char addr, char data)
 {
-  // send instruction with backlight pin P3
+  // send data
+  // data/command -> pin RS High
+  // backlight -> pin P3
   HD44780_PCF8574_Send_8bits_M4b_I(addr, data, PCF8574_PIN_RS | PCF8574_PIN_P3);
   // check BF
   //HD44780_PCF8574_CheckBF(addr);
@@ -348,7 +350,7 @@ void HD44780_PCF8574_CursorBlink (char addr)
  */
 void HD44780_PCF8574_DrawChar (char addr, char character)
 {
-  // Diplay clear
+  // Draw character
   HD44780_PCF8574_SendData(addr, character);
 }
 
@@ -363,9 +365,9 @@ void HD44780_PCF8574_DrawChar (char addr, char character)
 void HD44780_PCF8574_DrawString (char addr, char *str)
 {
   unsigned short int i = 0;
-  // loop through 5 bytes
+  // loop through chars
   while (str[i] != '\0') {
-    //read characters and increment index
+    // draw individual chars
     HD44780_PCF8574_DrawChar(addr, str[i++]);
   }
 }

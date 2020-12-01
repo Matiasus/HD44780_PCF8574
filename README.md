@@ -156,5 +156,6 @@ The second parameter is direction definition. Two possible values for direction 
 
 # Links
 - [HD44780 Datasheet](https://www.sparkfun.com/datasheets/LCD/HD44780.pdf)
-- [PCF8574 Datasheet](https://www.nxp.com/docs/en/data-sheet/PCF8574_PCF8574A.pdf)
+- [PCF8574 Datasheet NXP](https://www.nxp.com/docs/en/data-sheet/PCF8574_PCF8574A.pdf)
+- [PCF8574 Datasheet TI](https://www.ti.com/lit/ds/symlink/pcf8574.pdf?ts=1606802675229)
 

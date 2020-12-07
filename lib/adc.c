@@ -47,9 +47,9 @@ void AdcInit(void)
 /***
  * @desc   Read ADC value, ADLAR = 0
  *
- * @param  unsigned short int
+ * @param  char
  *
- * @return unsigned short int
+ * @return unsigned int
  */
 unsigned int AdcReadADC(char channel)
 {
@@ -74,9 +74,9 @@ unsigned int AdcReadADC(char channel)
  *
  * @param  char
  *
- * @return unsigned short int
+ * @return char
  */
-unsigned short int AdcReadADCH(char channel)
+char AdcReadADCH(char channel)
 {
   // select ADC channel
   ADC_SET_CHANNEL(channel);

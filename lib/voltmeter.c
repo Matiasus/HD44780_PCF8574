@@ -29,9 +29,12 @@ void Voltmeter (void)
 {
   char *str = " ERR0R ";
   char addr = PCF8574_ADDRESS;
+  unsigned int adc_value;
   unsigned long int voltage;
-  unsigned short int adc_value;
 
+  // factor calculation
+  // Umax = 32.2V
+  // Udiv =  2.0V at Umax
   float k = 32200 / (1024 * (2.00/5.00));
 
   // INIT PERIPHERAL

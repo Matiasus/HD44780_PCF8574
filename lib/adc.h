@@ -51,9 +51,9 @@
    *
    * @param  char
    *
-   * @return unsigned short int
+   * @return char
    */
-  unsigned short int AdcReadADCH(char);
+  char AdcReadADCH(char);
 
   /**
    * @desc    Get string int value

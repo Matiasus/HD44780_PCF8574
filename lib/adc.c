@@ -19,7 +19,6 @@
 #include <util/delay.h>
 #include "adc.h"
 
-
 /***
  * @desc   ADC init
  * - reference voltage AVcc with external capacitor at AREF pin

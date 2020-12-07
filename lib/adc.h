@@ -19,12 +19,12 @@
 #define __ADC_H__
 
   // @const ADC prescalers
-  #define ADC_PRESCALER_16  4
-  #define ADC_PRESCALER_32  5
-  #define ADC_PRESCALER_64  6
-  #define ADC_PRESCALER_128 7
+  #define ADC_PRESCALER_16             4
+  #define ADC_PRESCALER_32             5
+  #define ADC_PRESCALER_64             6
+  #define ADC_PRESCALER_128            7
   // ADC channel selector
-  #define ADC_SET_CHANNEL(CHANNEL) { ADMUX &= 0xF8; ADMUX |= CHANNEL & 0x07; }
+  #define ADC_SET_CHANNEL(CHANNEL)     { ADMUX &= 0xF8; ADMUX |= CHANNEL & 0x07; }
   // Set ADC prescaler
   #define ADC_SET_PRESCALER(PRESCALER) { ADCSRA &= ~((1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0)); ADCSRA |= PRESCALER & 0x07; }
  

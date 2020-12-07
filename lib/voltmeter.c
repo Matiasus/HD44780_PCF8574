@@ -18,8 +18,6 @@
 #include "voltmeter.h"
 #include "hd44780pcf8574.h"
 
-#define FACTOR 0.5  
-
 /**
  * @desc   Voltmeter
  *

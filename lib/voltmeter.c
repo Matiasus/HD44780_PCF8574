@@ -27,7 +27,7 @@
  */
 void Voltmeter (void)
 {
-  char *str = "ERR";
+  char *str = "ERR0R";
   char addr = PCF8574_ADDRESS;
   unsigned long int voltage;
   unsigned short int adc_value;

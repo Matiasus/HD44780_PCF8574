@@ -18,6 +18,8 @@
 #include "voltmeter.h"
 #include "hd44780pcf8574.h"
 
+#define FACTOR 0.5  
+
 /**
  * @desc   Voltmeter
  *
@@ -27,10 +29,12 @@
  */
 void Voltmeter (void)
 {
-  char *str = "ERR0R";
+  char *str = " ERR0R ";
   char addr = PCF8574_ADDRESS;
   unsigned long int voltage;
   unsigned short int adc_value;
+
+  float k = 32200 / (1024 * (2.00/5.00));
 
   // INIT PERIPHERAL
   // -------------------------------------------------   
@@ -47,7 +51,7 @@ void Voltmeter (void)
   HD44780_PCF8574_DisplayOn(addr);
   // draw char
   HD44780_PCF8574_DrawString(addr, "U [V]:");
-  // position  
+  // position
   HD44780_PCF8574_PositionXY(addr, 0, 1);
   // draw char
   HD44780_PCF8574_DrawString(addr, "I [A]:");
@@ -55,9 +59,9 @@ void Voltmeter (void)
   // infinitive loop
   while (1) {
     // read value
-    adc_value = AdcReadADCH(1);
+    adc_value = AdcReadADC(2);
     // calculate voltage
-    voltage = (long) adc_value * 5000/255;
+    voltage = (long) (k * adc_value);
     // set position
     HD44780_PCF8574_PositionXY(addr, 7, 0);
     // draw string

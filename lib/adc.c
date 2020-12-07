@@ -33,9 +33,10 @@
 void AdcInit(void)
 { 
   // reference voltage AVcc with external capacitor at AREF pin 
-  ADMUX |= (1 << REFS0);
+  ADMUX = (1 << REFS0);
+  //ADMUX |= (1 << REFS1);
   // align to left -> ADCH
-  ADMUX |= (1 << ADLAR);
+  //ADMUX |= (1 << ADLAR);
   // setting adc
   // - ADIE: adc interrupt enable
   // - ADEN: adc enable
@@ -45,13 +46,38 @@ void AdcInit(void)
 }
 
 /***
- * @desc   Read ADCH value, ADLAR = 1, right adjusted result
+ * @desc   Read ADC value, ADLAR = 0
  *
  * @param  unsigned short int
  *
  * @return unsigned short int
  */
-unsigned short int AdcReadADCH(unsigned short int channel)
+unsigned int AdcReadADC(char channel)
+{
+  // default
+  unsigned int value = 0x0000;
+  // select ADC channel
+  ADC_SET_CHANNEL(channel);
+  // start conversion
+  ADCSRA |= (1 << ADSC);
+  // wait conversion complete
+  while (ADCSRA & (1 << ADIF));
+  // read ADCL
+  value = ADCL;
+  // read ADCH
+  value |= (ADCH << 8);
+  // righ adjusted conversion result
+  return value;
+}
+
+/***
+ * @desc   Read ADCH value, ADLAR = 1, right adjusted result
+ *
+ * @param  char
+ *
+ * @return unsigned short int
+ */
+unsigned short int AdcReadADCH(char channel)
 {
   // select ADC channel
   ADC_SET_CHANNEL(channel);
@@ -76,17 +102,17 @@ char * AdcValToDecStr(unsigned long int real_value, char * str)
   // number value
   if (real_value < 10) {
     // to 10 mili
-    sprintf(str, "0.00%ld", real_value);  
+    sprintf(str, " 0.00%ld", real_value);  
   } else if (real_value < 100) {
     // to 100 mili
-    sprintf(str, "0.0%ld", real_value); 
+    sprintf(str, " 0.0%ld", real_value); 
   } else if (real_value < 1000) {
     // to 1 000 mili
-    sprintf(str, "0.%ld", real_value); 
+    sprintf(str, " 0.%ld", real_value); 
   } else if (real_value < 10000) {
     // to 10 000 mili
     sprintf(str, "%ld", real_value);
-    sprintf(str, "%c.%c%c%c", str[0], str[1], str[2], str[3]);
+    sprintf(str, " %c.%c%c%c", str[0], str[1], str[2], str[3]);
   } else if (real_value < 100000) {
     // to  100 000 mili
     sprintf(str, "%ld", real_value);

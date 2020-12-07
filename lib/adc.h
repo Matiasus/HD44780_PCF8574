@@ -37,15 +37,23 @@
    */
   void AdcInit(void);
 
-
   /**
    * @desc   Read ADC value
    *
-   * @param  unsigned short int
+   * @param  char
+   *
+   * @return unsigned int
+   */
+  unsigned int AdcReadADC(char);
+
+  /**
+   * @desc   Read ADCH value
+   *
+   * @param  char
    *
    * @return unsigned short int
    */
-  unsigned short int AdcReadADCH(unsigned short int);
+  unsigned short int AdcReadADCH(char);
 
   /**
    * @desc    Get string int value

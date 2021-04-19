@@ -11,12 +11,11 @@ Detailed information is in [PCF8574 Datasheet](https://www.nxp.com/docs/en/data-
 
 ## Hardware connection
 | PCF8574 PIN | ATMEGA328 PIN | ARDUINO UNO PIN | Description |
-| :---: | :---: |  :---: |
+| :---: | :---: | :---: |  :---: |
 | UCC | +5V | +5V | Supply Voltage |
 | USS | GND | GND | Ground |
 | SDA | PC4 | A4 | Contrast Adjustment |
 | SCL | PC5 | A5 | Data/Instruction Select |
-
 
 ## Library
 Library is aimed for MCU ATmega328 / Atmega8 which supports [4-bit Operation](#initializing-4-bit-operation).

@@ -55,21 +55,21 @@
 // |  RS R/W DB7 DB6 DB5 DB4   |   // Display off 0x28
 // |   0   0   0   0   1   0   |   // 
 // |   0   0   1   0   0   0   |   // 
-// |    Wait for BF Cleared    |   // Wait for BF Cleared
+// |    Wait for BF Cleared    |   // Wait for 50us
 // +---------------------------+
 //              |
 // +---------------------------+
 // |  RS R/W DB7 DB6 DB5 DB4   |   // Display clear 0x01
 // |   0   0   0   0   0   0   |   //
 // |   0   0   0   0   0   1   |   //
-// |    Wait for BF Cleared    |   // Wait for BF Cleared
+// |    Wait for BF Cleared    |   // Wait for 50us
 // +---------------------------+
 //              |
 // +---------------------------+
 // |  RS R/W DB7 DB6 DB5 DB4   |   // Entry mode set 0x06
 // |   0   0   0   0   0   0   |   // 
 // |   0   0   0   1   1   0   |   // shift cursor to the left, without text shifting
-// |    Wait for BF Cleared    |   // Wait for BF Cleared
+// |    Wait for BF Cleared    |   // Wait for 50us
 // +---------------------------+
 
 /**

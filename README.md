@@ -14,8 +14,8 @@ Detailed information is in [PCF8574 Datasheet](https://www.nxp.com/docs/en/data-
 | :---: | :---: | :---: |  :---: |
 | UCC | +5V | +5V | Supply Voltage |
 | USS | GND | GND | Ground |
-| SDA | PC4 | A4 | Contrast Adjustment |
-| SCL | PC5 | A5 | Data/Instruction Select |
+| SDA | PC4 | A4 | Data |
+| SCL | PC5 | A5 | Clock |
 
 ## Library
 Library is aimed for MCU ATmega328 / Atmega8 which supports [4-bit Operation](#initializing-4-bit-operation).

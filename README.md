@@ -9,6 +9,15 @@ Detailed information is in [HD44780 Datasheet](https://www.sparkfun.com/datashee
 ## PCF8574 Description
 Detailed information is in [PCF8574 Datasheet](https://www.nxp.com/docs/en/data-sheet/PCF8574_PCF8574A.pdf).
 
+## Hardware connection
+| PCF8574 PIN | ATMEGA328 PIN | ARDUINO UNO PIN | Description |
+| :---: | :---: |  :---: |
+| UCC | +5V | +5V | Supply Voltage |
+| USS | GND | GND | Ground |
+| SDA | PC4 | A4 | Contrast Adjustment |
+| SCL | PC5 | A5 | Data/Instruction Select |
+
+
 ## Library
 Library is aimed for MCU ATmega328 / Atmega8 which supports [4-bit Operation](#initializing-4-bit-operation).
 
@@ -58,21 +67,21 @@ Initializing LCD Driver HD44780 according to Figure 24 in [HD44780 Datasheet](ht
 // |  RS R/W DB7 DB6 DB5 DB4   |   // Display off 0x08
 // |   0   0   0   0   0   0   |   // 
 // |   0   0   1   0   0   0   |   // 
-// |    Wait for BF Cleared    |   // Wait for BF Cleared
+// |    Wait for BF Cleared    |   // Wait for 50us
 // +---------------------------+
 //              |
 // +---------------------------+
 // |  RS R/W DB7 DB6 DB5 DB4   |   // Display clear 0x01
 // |   0   0   0   0   0   0   |   //
 // |   0   0   0   0   0   1   |   //
-// |    Wait for BF Cleared    |   // Wait for BF Cleared
+// |    Wait for BF Cleared    |   // Wait for 50us
 // +---------------------------+
 //              |
 // +---------------------------+
 // |  RS R/W DB7 DB6 DB5 DB4   |   // Entry mode set 0x06
 // |   0   0   0   0   0   0   |   // 
 // |   0   0   0   1   1   0   |   // shift cursor to the left, without text shifting
-// |    Wait for BF Cleared    |   // Wait for BF Cleared
+// |    Wait for BF Cleared    |   // Wait for 50us
 // +---------------------------+
 ```
 ## Functions
@@ -104,19 +113,19 @@ Display clear and set cursor to position 0, 0.
 ```c
 void HD44780_PCF8574_DisplayOn (void)
 ```
-Turn on the display.
+Turn on the display. 
 
 ### HD44780_PCF8574_CursorOn
 ```c
 void HD44780_PCF8574_CursorOn (void)
 ```
-Turn on the cursor. Cursor will be visible.
+Turn on the cursor and display on. Cursor will be visible. IMPORTANT: Function [HD44780_CursorOn()](https://github.com/Matiasus/HD44780#hd44780_cursoron) besides the cursor on, switch the display on, so don't need to use function [HD44780_DisplayOn()](https://github.com/Matiasus/HD44780#hd44780_displayon). But without function [HD44780_CursorOn()](https://github.com/Matiasus/HD44780#hd44780_cursoron) display is switched on by the function [HD44780_DisplayOn()](https://github.com/Matiasus/HD44780#hd44780_displayon).
 
 ### HD44780_PCF8574_CursorBlink
 ```c
 void HD44780_PCF8574_CursorBlink (void)
 ```
-Turn the cursor blink. Cursor will be visible and it will blink.
+Turn the cursor blink. Cursor will be visible and it will blink. IMPORTANT: Function [HD44780_CursorBlink()](https://github.com/Matiasus/HD44780#hd44780_cursorblink) besides the cursor blink, switch the display on, so don't need to use function [HD44780_DisplayOn()](https://github.com/Matiasus/HD44780#hd44780_displayon). But without function [HD44780_CursorBlink()](https://github.com/Matiasus/HD44780#hd44780_cursorblink) display is switched on by the function [HD44780_DisplayOn()](https://github.com/Matiasus/HD44780#hd44780_displayon).
 
 ### HD44780_PCF8574_DrawChar
 ```c

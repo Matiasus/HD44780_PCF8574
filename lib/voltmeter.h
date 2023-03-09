@@ -16,10 +16,6 @@
 #ifndef __VOLTMETER_H__
 #define __VOLTMETER_H__
 
-  #define BLACK 0x0000
-  #define WHITE 0xffff
-  #define RED   0xf000
-
   /**
    * @desc   Voltmeter
    *
